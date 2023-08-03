@@ -24,13 +24,28 @@ def verificarUsuario(login, senha):
     try:
         with open('cadastrados.txt', 'r+', encoding='Utf-8', newline='') as arquivo:
             for linha in arquivo:
-                linha = linha.strip(",")
+                linha = linha.replace(","," " )
                 usuario.append(linha.split())
 
             for usuarios in usuario:
                 nome = usuarios[0]
-                password = usuario[1]
+                password = usuarios[1]
                 if login == nome and senha == password:
+                    return True
+    except FileNotFoundError:
+        return False
+
+def usuarioExistente(login):
+    usuario = []
+    try:
+        with open('cadastrados.txt', 'r+', encoding='Utf-8', newline='') as arquivo:
+            for linha in arquivo:
+                linha = linha.replace(","," " )
+                usuario.append(linha.split())
+
+            for usuarios in usuario:
+                nome = usuarios[0]
+                if login == nome:
                     return True
     except FileNotFoundError:
         return False
@@ -56,13 +71,12 @@ while True:
             sleep(3)
             continue
 
-        user = verificarUsuario(login, senha)
+        user = usuarioExistente(login)
         if user == True:
             print('Esse usuário já existe')
             sleep(2)
             continue
-        
-        
+              
 
         else:
             with open('cadastrados.txt', 'a+', encoding='Utf-8', newline='') as arquivo:
@@ -71,3 +85,15 @@ while True:
             sleep(2)
             break
 
+    elif opcao == 'L':
+        login, senha = fazerLogin()
+        user = verificarUsuario(login, senha)
+        if user == True:
+            print('Login realizado com sucesso!')
+            sleep(2)
+            break
+        
+        else:
+            print('Login ou senha inválidos!\nTente novamente!')
+            sleep(2)
+            continue
